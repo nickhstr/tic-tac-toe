@@ -16,7 +16,19 @@ TicTacToe.prototype.init = function() {
  // setting initial state
   this.state.push({
     activePlayer: 'x',
-    currentBoard: this.freshBoard()
+    currentBoard: this.freshBoard(),
+    gameCount: 1
+  });
+
+  this.squares = elsByClass('square');
+
+  this.clearSquares();
+  this.updateHandlers(true);
+}
+
+TicTacToe.prototype.clearSquares = function() {
+  Array.prototype.forEach.call(this.squares, function(square) {
+    square.innerHTML = null;
   });
 }
 
@@ -105,11 +117,11 @@ TicTacToe.prototype.isWinningTurn = function(activePlayer, updatedBoard) {
   return false;
 }
 
-TicTacToe.prototype.takeTurn = function(x, y) {
+TicTacToe.prototype.takeTurn = function(x, y, el) {
   var state = this.getCurrentState();
   var valid = false;
   var winning = false;
-  if(this.isValidTurn(x, y)) {
+  if (this.isValidTurn(x, y)) {
     var newState = {
             activePlayer: (state.activePlayer === 'x') ? 'o' : 'x'
     };
@@ -117,6 +129,12 @@ TicTacToe.prototype.takeTurn = function(x, y) {
     newState.currentBoard = this.updatedBoard(x, y);
     newState.winningMove = winning = this.isWinningTurn(state.activePlayer, newState.currentBoard);
     this.state.push(newState);
+    el.innerHTML = state.activePlayer;
+
+    if (winning) {
+      console.log(state.activePlayer + ' won!');
+      this.updateHandlers(false);
+    }
   }
   else {
     var newState = {
@@ -126,17 +144,38 @@ TicTacToe.prototype.takeTurn = function(x, y) {
         winning: false
     };
     this.state.push(newState);
+    console.log('That space is taken already!');
   }
-  console.log(this.getCurrentState());
+  console.log(JSON.stringify(this.getCurrentState().currentBoard));
   return this.getCurrentState();
 }
 
-var tictactoe = new TicTacToe();
+TicTacToe.prototype.updateHandlers = function(bool) {
+  if (bool) {
+    Array.prototype.forEach.call(this.squares, function(square) {
+      square.onclick = function(e) {
+        var cords = JSON.parse(this.dataset.cords);
+        var x = cords[0];
+        var y = cords[1];
+        console.log(cords);
+        tictactoe.takeTurn(x, y, this);
+      };
+    });
+  }
+  else {
+    Array.prototype.forEach.call(this.squares, function(square) {
+      square.onclick = null;
+    });
+  }
+}
 
-tictactoe.reset();
+function startGame(global) {
+  global.tictactoe = new TicTacToe();
+  var start = elById('start');
+  var board = elById('board');
+  var controlPanel = elById('controlPanel');
 
-tictactoe.takeTurn(0, 0);
-tictactoe.takeTurn(1, 0);
-tictactoe.takeTurn(1, 1);
-tictactoe.takeTurn(1, 2);
-tictactoe.takeTurn(2, 2);
+  start.className = 'hide';
+  board.className = null;
+  controlPanel.className = null;
+}

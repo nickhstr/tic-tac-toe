@@ -1,2 +1,10 @@
 $main-font: Helvetica, Arial, sans-serif;
 $main-color: #3f3f3f;
+$main-background: #fff;
+
+$board-background: #dfdfdf;
+$board-width: 75vh;
+
+$square-width: calc(#{$board-width} / 3);
+$square-background: #cdcdcd;
+$square-font-size: calc(#{$board-width} / 4);

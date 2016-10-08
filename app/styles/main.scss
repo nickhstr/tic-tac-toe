@@ -1,6 +1,64 @@
 @import 'variables';
+@import 'shared-styles';
 
 html, body {
 	font-family: $main-font;
 	color: $main-color;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+h1 {
+	width: 100vw;
+	text-align: center;
+}
+
+#start {
+	margin: 20vh auto;
+}
+
+#controlPanel {
+	width: 100vw;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	margin: 20px auto;
+}
+
+#board {
+	width: $board-width;
+	height: $board-width;
+	background: $board-background;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
+
+.row {
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.square {
+	box-sizing: border-box;
+	width: $square-width;
+	height: $square-width;
+	background-color: $square-background;
+	margin: 0;
+	padding: 0;
+	border: 1px solid white;
+	transition: background 150ms;
+	font-size: $square-font-size;
+	text-align: center;
+}
+
+.square:hover {
+	background: #eee;
+	cursor: pointer;
+}
+
+.hide {
+	display: none !important;
 }

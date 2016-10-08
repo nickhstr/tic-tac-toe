@@ -2,11 +2,36 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
 		<title>Nick's Tic-Tac-Toe</title>
 		<link rel="stylesheet" href="styles.min.css">
 	</head>
 	<body>
-		<h1>Welcome!</h1>
+		<h1>Tic Tac Toe</h1>
+		<div class="flex center-center">
+			<button id="start" onclick="startGame(window)" class="button">Start Game</button>
+		</div>
+		<div id="controlPanel" class="hide">
+			<button onclick="tictactoe.reset()">Reset Game</button>
+			<button onclick="tictactoe.undo()" disabled>Undo</button>
+		</div>
+		<div id="board" class="hide">
+			<div id="row1" class="row">
+				<div class="square" data-cords="[0,0]"></div>
+				<div class="square" data-cords="[0,1]"></div>
+				<div class="square" data-cords="[0,2]"></div>
+			</div>
+			<div id="row2" class="row">
+				<div class="square" data-cords="[1,0]"></div>
+				<div class="square" data-cords="[1,1]"></div>
+				<div class="square" data-cords="[1,2]"></div>
+			</div>
+			<div id="row3" class="row">
+				<div class="square" data-cords="[2,0]"></div>
+				<div class="square" data-cords="[2,1]"></div>
+				<div class="square" data-cords="[2,2]"></div>
+			</div>
+		</div>
 		<script src="app.min.js"></script>
 	</body>
 </html>
