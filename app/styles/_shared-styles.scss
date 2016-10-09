@@ -1,11 +1,22 @@
 .button {
 	padding: 0.5em 1.5em;
+	margin: 5px;
 	font-size: 2em;
 	background: $main-background;
-	border: 2px solid black;
+	border: $border-thick;
 }
 
-.button:hover {
+.button-small {
+	@extend .button;
+	font-size: 1em;
+}
+
+.button[disabled], .button-small[disabled] {
+	opacity: 0.5;
+	cursor: default;
+}
+
+button:hover {
 	cursor: pointer;
 }
 
@@ -14,11 +25,13 @@
 	flex-wrap: wrap;
 }
 
-.center {
+.flex-center {
+	@extend .flex;
 	justify-content: center;
 }
 
-.center-center {
+.flex-center-center {
+	@extend .flex-center;
 	justify-content: center;
 	align-items: center;
 }

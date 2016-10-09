@@ -1,10 +1,16 @@
 $main-font: Helvetica, Arial, sans-serif;
-$main-color: #3f3f3f;
+$main-color: #000;
 $main-background: #fff;
 
 $board-background: #dfdfdf;
-$board-width: 75vh;
+$board-width-large: 75vh;
+$board-width-small: 95vw;
 
-$square-width: calc(#{$board-width} / 3);
-$square-background: #cdcdcd;
-$square-font-size: calc(#{$board-width} / 4);
+$square-width-large: calc(#{$board-width-large} / 3);
+$square-background: #fff;
+$square-font-size-large: calc(#{$board-width-large} / 4);
+$square-font-size-small: calc(#{$board-width-small} / 4);
+$square-width-small: calc(#{$board-width-small} / 3);
+
+$border-thick: 2px solid black;
+$border-thin: 1px solid black;

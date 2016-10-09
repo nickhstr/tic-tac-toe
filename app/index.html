@@ -6,32 +6,44 @@
 		<title>Nick's Tic-Tac-Toe</title>
 		<link rel="stylesheet" href="styles.min.css">
 	</head>
-	<body>
-		<h1>Tic Tac Toe</h1>
-		<div class="flex center-center">
-			<button id="start" onclick="startGame(window)" class="button">Start Game</button>
-		</div>
-		<div id="controlPanel" class="hide">
-			<button onclick="tictactoe.reset()">Reset Game</button>
-			<button onclick="tictactoe.undo()" disabled>Undo</button>
-		</div>
-		<div id="board" class="hide">
-			<div id="row1" class="row">
-				<div class="square" data-cords="[0,0]"></div>
-				<div class="square" data-cords="[0,1]"></div>
-				<div class="square" data-cords="[0,2]"></div>
+	<body class="flex-center">
+
+		<h1 id="title" class="title-intro">Tic Tac Toe</h1>
+
+		<form id="startForm" class="flex-center">
+			<section class="options flex-center">
+				<input id="xOption" type="radio" name="marker" value="x">
+				<label for="xOption">X</label>
+				<input id="yOption" type="radio" name="marker" value="y">
+				<label for="yOption">Y</label>
+			</section>
+			<button id="start" class="button" type="submit">Start Game</button>
+		</form>
+
+		<main id="game" class="flex-center hide">
+			<section id="controlPanel" class="flex-center-center">
+				<button class="button-small" onclick="tictactoe.reset()">Reset Game</button>
+				<button id="undo" class="button-small" onclick="tictactoe.undo()">Undo</button>
+			</section>
+
+			<div id="board" class="flex-center">
+				<div id="row1" class="row">
+					<div class="square square-top square-left" data-cords="[0,0]"></div>
+					<div class="square square-top" data-cords="[0,1]"></div>
+					<div class="square square-top square-right" data-cords="[0,2]"></div>
+				</div>
+				<div id="row2" class="row">
+					<div class="square square-left" data-cords="[1,0]"></div>
+					<div class="square" data-cords="[1,1]"></div>
+					<div class="square square-right" data-cords="[1,2]"></div>
+				</div>
+				<div id="row3" class="row">
+					<div class="square square-bottom square-left" data-cords="[2,0]"></div>
+					<div class="square square-bottom" data-cords="[2,1]"></div>
+					<div class="square square-bottom square-right" data-cords="[2,2]"></div>
+				</div>
 			</div>
-			<div id="row2" class="row">
-				<div class="square" data-cords="[1,0]"></div>
-				<div class="square" data-cords="[1,1]"></div>
-				<div class="square" data-cords="[1,2]"></div>
-			</div>
-			<div id="row3" class="row">
-				<div class="square" data-cords="[2,0]"></div>
-				<div class="square" data-cords="[2,1]"></div>
-				<div class="square" data-cords="[2,2]"></div>
-			</div>
-		</div>
+		</main>
 		<script src="app.min.js"></script>
 	</body>
 </html>

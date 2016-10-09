@@ -9,27 +9,55 @@ TicTacToe.prototype.getCurrentState = function() {
 
 TicTacToe.prototype.reset = function() {
   this.init();
+  this.showBoard(false);
 }
 
 TicTacToe.prototype.init = function() {
   this.state = [];
- // setting initial state
-  this.state.push({
+  this.squares = elsByClass('square');
+  this.undoButton = elById('undo');
+  this.startForm = elById('startForm');
+  this.game = elById('game');
+  this.title = elById('title');
+
+  var row1 = Array.prototype.slice.call(this.squares, 0, 3);
+  var row2 = Array.prototype.slice.call(this.squares, 3, 6);
+  var row3 = Array.prototype.slice.call(this.squares, 6);
+
+  this.rows = [row1, row2, row3];
+  // setting initial state
+  var initialState = {
     activePlayer: 'x',
     currentBoard: this.freshBoard(),
     gameCount: 1
+  };
+  this.updateState({
+    type: 'add',
+    newState: initialState
   });
-
-  this.squares = elsByClass('square');
-
-  this.clearSquares();
   this.updateHandlers(true);
 }
 
-TicTacToe.prototype.clearSquares = function() {
-  Array.prototype.forEach.call(this.squares, function(square) {
-    square.innerHTML = null;
-  });
+TicTacToe.prototype.updateState = function(action) {
+  switch (action.type) {
+    case 'add':
+      this.state.push(action.newState);
+      break;
+    case 'undo':
+      this.state.pop();
+      break;
+  }
+  this.undoButton.disabled = this.state.length <= 1;
+  this.notifySquares();
+}
+
+TicTacToe.prototype.notifySquares = function() {
+  var board = this.getCurrentState().currentBoard;
+  for (var i = 0; i < board.length; i++) {
+    for (var j = 0; j < board[i].length; j++) {
+      this.rows[i][j].innerHTML = board[i][j];
+    }
+  }
 }
 
 TicTacToe.prototype.updatedBoard = function(x,y) {
@@ -54,7 +82,9 @@ TicTacToe.prototype.freshBoard = function() {
 
 TicTacToe.prototype.undo = function() {
 //go back to the previous state
-  this.state.pop();
+  this.updateState({
+    type: 'undo'
+  });
 }
 
 TicTacToe.prototype.isValidTurn = function(x, y) {
@@ -128,8 +158,10 @@ TicTacToe.prototype.takeTurn = function(x, y, el) {
     valid = true;
     newState.currentBoard = this.updatedBoard(x, y);
     newState.winningMove = winning = this.isWinningTurn(state.activePlayer, newState.currentBoard);
-    this.state.push(newState);
-    el.innerHTML = state.activePlayer;
+    this.updateState({
+      type: 'add',
+      newState: newState
+    });
 
     if (winning) {
       console.log(state.activePlayer + ' won!');
@@ -137,16 +169,9 @@ TicTacToe.prototype.takeTurn = function(x, y, el) {
     }
   }
   else {
-    var newState = {
-        activePlayer: state.activePlayer,
-        currentBoard: state.currentBoard,
-        valid: false,
-        winning: false
-    };
-    this.state.push(newState);
     console.log('That space is taken already!');
   }
-  console.log(JSON.stringify(this.getCurrentState().currentBoard));
+
   return this.getCurrentState();
 }
 
@@ -157,7 +182,6 @@ TicTacToe.prototype.updateHandlers = function(bool) {
         var cords = JSON.parse(this.dataset.cords);
         var x = cords[0];
         var y = cords[1];
-        console.log(cords);
         tictactoe.takeTurn(x, y, this);
       };
     });
@@ -169,13 +193,29 @@ TicTacToe.prototype.updateHandlers = function(bool) {
   }
 }
 
-function startGame(global) {
-  global.tictactoe = new TicTacToe();
-  var start = elById('start');
-  var board = elById('board');
-  var controlPanel = elById('controlPanel');
+TicTacToe.prototype.showBoard = function(bool) {
+  if (bool) {
+    this.startForm.style.display = 'none';
+    this.game.className = this.game.className.replace(/\s?(hide)\s?/, '');
+    this.title.className = '';
+  }
+  else {
+    this.startForm.style.display = '';
+    this.game.className += ' hide';
+    this.title.className = 'title-intro';
+  }
+}
 
-  start.className = 'hide';
-  board.className = null;
-  controlPanel.className = null;
+function startGame() {
+  window.tictactoe = new TicTacToe();
+  tictactoe.showBoard(true);
+}
+
+window.onload = function(e) {
+  elById('startForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    console.log('Form event', e);
+    startGame();
+    console.log(this);
+  });
 }

@@ -2,20 +2,54 @@
 @import 'shared-styles';
 
 html, body {
+	margin: 0;
+	padding: 0;
 	font-family: $main-font;
 	color: $main-color;
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: center;
+	overflow: hidden;
 }
 
 h1 {
 	width: 100vw;
 	text-align: center;
+	font-weight: 100;
+	margin: 20px 0;
+	transition: transform 300ms;
 }
 
-#start {
-	margin: 20vh auto;
+.title-intro {
+	transform: translateY(3em) scale(1.75, 1.75);
+}
+
+#startForm {
+	margin: 8em auto;
+}
+
+.options {
+	width: 100vw;
+	margin: 20px auto;
+
+	input {
+		display: none;
+	}
+
+	label {
+		margin: 5px;
+		padding: 0.5em 1.5em;
+		cursor: pointer;
+		font-size: 2em;
+	}
+
+	input:checked + label {
+		background: #000;
+		color: #fff;
+	}
+}
+
+#game {
+	opacity: 1;
+	margin: 0 auto 10em auto;
+	transition: transform 300ms, opacity 1000ms;
 }
 
 #controlPanel {
@@ -23,16 +57,21 @@ h1 {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
-	margin: 20px auto;
+	margin: 0 auto 20px auto;
+	opacity: 1;
 }
 
 #board {
-	width: $board-width;
-	height: $board-width;
+	width: $board-width-large;
+	height: $board-width-large;
 	background: $board-background;
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: flex-start;
+	opacity: 1;
+}
+@media (max-width: 550px) {
+	#board {
+		width: $board-width-small;
+		height: $board-width-small;
+	}
 }
 
 .row {
@@ -43,22 +82,46 @@ h1 {
 
 .square {
 	box-sizing: border-box;
-	width: $square-width;
-	height: $square-width;
+	width: $square-width-large;
+	height: $square-width-large;
 	background-color: $square-background;
 	margin: 0;
 	padding: 0;
-	border: 1px solid white;
+	border: 1px solid black;
 	transition: background 150ms;
-	font-size: $square-font-size;
+	font-size: $square-font-size-large;
 	text-align: center;
+}
+@media (max-width: 550px) {
+	.square {
+		width: $square-width-small;
+		height: $square-width-small;
+		font-size: $square-font-size-small;
+	}
+}
+
+.square-top {
+	border-top: $border-thick;
+}
+
+.square-right {
+	border-right: $border-thick;
+}
+
+.square-bottom {
+	border-bottom: $border-thick;
+}
+
+.square-left {
+	border-left: $border-thick;
 }
 
 .square:hover {
-	background: #eee;
+	background: #ddd;
 	cursor: pointer;
 }
 
 .hide {
-	display: none !important;
+	opacity: 0 !important;
+	transform: translateY(2000px) !important;
 }
