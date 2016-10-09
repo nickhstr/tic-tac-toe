@@ -1,5 +1,5 @@
-function TicTacToe() {
-  this.init();
+function TicTacToe(marker) {
+  this.init(marker);
 }
 
 TicTacToe.prototype.getCurrentState = function() {
@@ -12,7 +12,7 @@ TicTacToe.prototype.reset = function() {
   this.showBoard(false);
 }
 
-TicTacToe.prototype.init = function() {
+TicTacToe.prototype.init = function(marker) {
   this.state = [];
   this.squares = elsByClass('square');
   this.undoButton = elById('undo');
@@ -27,7 +27,7 @@ TicTacToe.prototype.init = function() {
   this.rows = [row1, row2, row3];
   // setting initial state
   var initialState = {
-    activePlayer: 'x',
+    activePlayer: marker,
     currentBoard: this.freshBoard(),
     gameCount: 1
   };
@@ -36,6 +36,7 @@ TicTacToe.prototype.init = function() {
     newState: initialState
   });
   this.updateHandlers(true);
+  console.log(initialState);
 }
 
 TicTacToe.prototype.updateState = function(action) {
@@ -183,6 +184,7 @@ TicTacToe.prototype.updateHandlers = function(bool) {
         var x = cords[0];
         var y = cords[1];
         tictactoe.takeTurn(x, y, this);
+        this.blur();
       };
     });
   }
@@ -195,27 +197,26 @@ TicTacToe.prototype.updateHandlers = function(bool) {
 
 TicTacToe.prototype.showBoard = function(bool) {
   if (bool) {
-    this.startForm.style.display = 'none';
-    this.game.className = this.game.className.replace(/\s?(hide)\s?/, '');
+    this.startForm.className += ' hide-shrink';
+    this.game.className = this.game.className.replace(/\s?(hide-down)\s?/, '');
     this.title.className = '';
   }
   else {
-    this.startForm.style.display = '';
-    this.game.className += ' hide';
+    this.startForm.className = this.startForm.className.replace(/\s?(hide-shrink)\s?/, '');
+    this.game.className += ' hide-down';
     this.title.className = 'title-intro';
   }
 }
 
-function startGame() {
-  window.tictactoe = new TicTacToe();
+function startGame(marker) {
+  window.tictactoe = new TicTacToe(marker);
   tictactoe.showBoard(true);
 }
 
 window.onload = function(e) {
   elById('startForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    console.log('Form event', e);
-    startGame();
-    console.log(this);
+    var marker = this.elements.marker.value;
+    startGame(marker);
   });
 }

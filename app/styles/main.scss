@@ -22,7 +22,17 @@ h1 {
 }
 
 #startForm {
-	margin: 8em auto;
+	margin: 5em auto;
+	z-index: 10;
+	transition: transform 300ms, z-index 300ms, height 300ms, margin 300ms;
+}
+
+h2 {
+	width: 100%;
+	text-align: center;
+	font-size: 1em;
+	font-weight: 100;
+	margin: 1em;
 }
 
 .options {
@@ -34,7 +44,7 @@ h1 {
 	}
 
 	label {
-		margin: 5px;
+		margin: 0.25em;
 		padding: 0.5em 1.5em;
 		cursor: pointer;
 		font-size: 2em;
@@ -48,8 +58,9 @@ h1 {
 
 #game {
 	opacity: 1;
+	z-index: 10;
 	margin: 0 auto 10em auto;
-	transition: transform 300ms, opacity 1000ms;
+	transition: transform 300ms, opacity 1000ms, z-index 300ms;
 }
 
 #controlPanel {
@@ -121,7 +132,15 @@ h1 {
 	cursor: pointer;
 }
 
-.hide {
+.hide-down {
+	z-index: -10 !important;
 	opacity: 0 !important;
 	transform: translateY(2000px) !important;
+}
+
+.hide-shrink {
+	z-index: -10 !important;
+	transform: scale(0,0) !important;
+	height: 0 !important;
+	margin: 0 !important;
 }

@@ -12,15 +12,18 @@
 
 		<form id="startForm" class="flex-center">
 			<section class="options flex-center">
-				<input id="xOption" type="radio" name="marker" value="x">
+				<h2>Choose Your Mark</h2>
+
+				<input id="xOption" type="radio" name="marker" value="x" checked>
 				<label for="xOption">X</label>
-				<input id="yOption" type="radio" name="marker" value="y">
-				<label for="yOption">Y</label>
+
+				<input id="oOption" type="radio" name="marker" value="o">
+				<label for="oOption">O</label>
 			</section>
 			<button id="start" class="button" type="submit">Start Game</button>
 		</form>
 
-		<main id="game" class="flex-center hide">
+		<main id="game" class="flex-center hide-down">
 			<section id="controlPanel" class="flex-center-center">
 				<button class="button-small" onclick="tictactoe.reset()">Reset Game</button>
 				<button id="undo" class="button-small" onclick="tictactoe.undo()">Undo</button>
