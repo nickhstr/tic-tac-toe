@@ -1,5 +1,5 @@
-function TicTacToe(marker) {
-  this.init(marker);
+function TicTacToe(game) {
+  this.init(game);
 }
 
 TicTacToe.prototype.getCurrentState = function() {
@@ -8,11 +8,14 @@ TicTacToe.prototype.getCurrentState = function() {
 }
 
 TicTacToe.prototype.reset = function() {
-  this.init();
+  this.init({
+    marker: null,
+    player: null
+  });
   this.showBoard(false);
 }
 
-TicTacToe.prototype.init = function(marker) {
+TicTacToe.prototype.init = function(game) {
   this.state = [];
   this.squares = elsByClass('square');
   this.undoButton = elById('undo');
@@ -27,16 +30,15 @@ TicTacToe.prototype.init = function(marker) {
   this.rows = [row1, row2, row3];
   // setting initial state
   var initialState = {
-    activePlayer: marker,
-    currentBoard: this.freshBoard(),
-    gameCount: 1
+    activePlayer: game.player,
+    playerMarker: game.marker,
+    currentBoard: this.freshBoard()
   };
   this.updateState({
     type: 'add',
     newState: initialState
   });
   this.updateHandlers(true);
-  console.log(initialState);
 }
 
 TicTacToe.prototype.updateState = function(action) {
@@ -48,8 +50,13 @@ TicTacToe.prototype.updateState = function(action) {
       this.state.pop();
       break;
   }
-  this.undoButton.disabled = this.state.length <= 1;
+  this.notify();
+  console.log(this.getCurrentState());
+}
+
+TicTacToe.prototype.notify = function() {
   this.notifySquares();
+  this.notifyControlPanel();
 }
 
 TicTacToe.prototype.notifySquares = function() {
@@ -61,15 +68,19 @@ TicTacToe.prototype.notifySquares = function() {
   }
 }
 
+TicTacToe.prototype.notifyControlPanel = function() {
+  this.undoButton.disabled = this.state.length <= 1;
+}
+
 TicTacToe.prototype.updatedBoard = function(x,y) {
   var state = this.getCurrentState();
-  var activePlayer = state.activePlayer;
+  var playerMarker = state.playerMarker;
   var currentBoard = state.currentBoard;
   var newBoard = [];
   for (var i = 0; i < currentBoard.length; i++) {
     newBoard.push(currentBoard[i].concat());
   }
-  newBoard[x][y] = activePlayer;
+  newBoard[x][y] = playerMarker;
   return newBoard;
 }
 
@@ -102,13 +113,13 @@ TicTacToe.prototype.isValidTurn = function(x, y) {
   return false;
 }
 
-TicTacToe.prototype.isWinningTurn = function(activePlayer, updatedBoard) {
+TicTacToe.prototype.isWinningTurn = function(playerMarker, updatedBoard) {
   var checkVertical = function () {
     for (var i = 0; i < 3; i++) {
       // For each array in updatedBoard, check the square in each
       // column for activePlayer's mark
       var column = updatedBoard.filter(function(row) {
-          return row[i] === activePlayer;
+          return row[i] === playerMarker;
       });
       // If a column has three activePlayer marks, activePlayer has
       // won the game
@@ -122,7 +133,7 @@ TicTacToe.prototype.isWinningTurn = function(activePlayer, updatedBoard) {
     // Same as checkVertical, only checking each row's items instead
     for (var i = 0; i < 3; i++) {
       var row = updatedBoard[i].filter(function(square){
-          return square === activePlayer;
+          return square === playerMarker;
       });
       if (row.length === 3) {
           return true;
@@ -131,11 +142,11 @@ TicTacToe.prototype.isWinningTurn = function(activePlayer, updatedBoard) {
     return false;
   };
   var checkDiagonal = function () {
-    if (updatedBoard[1][1] === activePlayer) {
-      if ((updatedBoard[0][0] === activePlayer &&
-      updatedBoard[2][2]=== activePlayer) ||
-      (updatedBoard[2][0] === activePlayer &&
-      updatedBoard[0][2] === activePlayer)) {
+    if (updatedBoard[1][1] === playerMarker) {
+      if ((updatedBoard[0][0] === playerMarker &&
+      updatedBoard[2][2]=== playerMarker) ||
+      (updatedBoard[2][0] === playerMarker &&
+      updatedBoard[0][2] === playerMarker)) {
           return true;
       }
     }
@@ -154,11 +165,12 @@ TicTacToe.prototype.takeTurn = function(x, y, el) {
   var winning = false;
   if (this.isValidTurn(x, y)) {
     var newState = {
-            activePlayer: (state.activePlayer === 'x') ? 'o' : 'x'
+            activePlayer: (state.activePlayer === 'computer') ? 'player' : 'computer',
+            playerMarker: (state.playerMarker === 'x') ? 'o' : 'x'
     };
     valid = true;
     newState.currentBoard = this.updatedBoard(x, y);
-    newState.winningMove = winning = this.isWinningTurn(state.activePlayer, newState.currentBoard);
+    newState.winningMove = winning = this.isWinningTurn(state.playerMarker, newState.currentBoard);
     this.updateState({
       type: 'add',
       newState: newState
@@ -172,8 +184,6 @@ TicTacToe.prototype.takeTurn = function(x, y, el) {
   else {
     console.log('That space is taken already!');
   }
-
-  return this.getCurrentState();
 }
 
 TicTacToe.prototype.updateHandlers = function(bool) {
@@ -184,7 +194,6 @@ TicTacToe.prototype.updateHandlers = function(bool) {
         var x = cords[0];
         var y = cords[1];
         tictactoe.takeTurn(x, y, this);
-        this.blur();
       };
     });
   }
@@ -208,8 +217,13 @@ TicTacToe.prototype.showBoard = function(bool) {
   }
 }
 
-function startGame(marker) {
-  window.tictactoe = new TicTacToe(marker);
+function playerOrComputerFirst() {
+  var random = Math.round(Math.random());
+  return random === 0 ? 'player' : 'computer';
+}
+
+function startGame(game) {
+  window.tictactoe = new TicTacToe(game);
   tictactoe.showBoard(true);
 }
 
@@ -217,6 +231,10 @@ window.onload = function(e) {
   elById('startForm').addEventListener('submit', function(e) {
     e.preventDefault();
     var marker = this.elements.marker.value;
-    startGame(marker);
+    var player = playerOrComputerFirst();
+    startGame({
+      marker: marker,
+      player: player
+    });
   });
 }
