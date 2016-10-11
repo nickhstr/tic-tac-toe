@@ -10,7 +10,8 @@ TicTacToe.prototype.getCurrentState = function() {
 TicTacToe.prototype.reset = function() {
   this.init({
     marker: null,
-    player: null
+    player: null,
+    reset: true
   });
   this.showBoard(false);
 }
@@ -18,11 +19,12 @@ TicTacToe.prototype.reset = function() {
 TicTacToe.prototype.init = function(game) {
   this.state = [];
   this.squares = elsByClass('square');
-  // this.undoButton = elById('undo');
   this.startForm = elById('startForm');
   this.game = elById('game');
   this.title = elById('title');
   this.computerDelay = 750;
+  this.playerTab = elById('playerTab');
+  this.computerTab = elById('computerTab');
 
   var row1 = Array.prototype.slice.call(this.squares, 0, 3);
   var row2 = Array.prototype.slice.call(this.squares, 3, 6);
@@ -38,7 +40,8 @@ TicTacToe.prototype.init = function(game) {
     draw: false,
     winner: null,
     playerWinCount: parseInt(localStorage.getItem('playerWinCount')),
-    computerWinCount: parseInt(localStorage.getItem('computerWinCount'))
+    computerWinCount: parseInt(localStorage.getItem('computerWinCount')),
+    reset: game.reset
   };
   this.updateState({
     type: 'add',
@@ -83,15 +86,21 @@ TicTacToe.prototype.notifySquares = function() {
 TicTacToe.prototype.notifyTurn = function() {
   var state = this.getCurrentState();
 
-  if (state.activePlayer === 'computer' && state.winningMove === false && state.draw === false) {
+  if (state.activePlayer === 'computer' && !state.winningMove && !state.draw) {
     this.updateHandlers(false);
     this.computerTurn();
+    this.computerTab.className = '';
+    this.playerTab.className = 'hide-up';
   }
-  else if (state.winningMove || state.draw) {
+  else if (state.winningMove || state.draw || state.reset) {
     this.updateHandlers(false);
+    this.computerTab.className = 'hide-up';
+    this.playerTab.className = 'hide-up';
   }
   else {
     this.updateHandlers(true);
+    this.computerTab.className = 'hide-up';
+    this.playerTab.className = '';
   }
 }
 
@@ -376,7 +385,8 @@ TicTacToe.prototype.takeTurn = function(x, y) {
       activePlayer: (state.activePlayer === 'computer') ? 'player' : 'computer',
       playerMarker: (state.playerMarker === 'x') ? 'o' : 'x',
       computerWinCount: state.computerWinCount,
-      playerWinCount: state.playerWinCount
+      playerWinCount: state.playerWinCount,
+      reset: state.reset
     };
     newState.currentBoard = this.updatedBoard(x, y);
     newState.winningMove = winning = this.isWinningTurn(state.playerMarker, newState.currentBoard);

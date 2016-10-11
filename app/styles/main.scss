@@ -27,6 +27,13 @@ h1 {
 	transition: transform 300ms, z-index 300ms, height 300ms, margin 300ms;
 }
 
+.hide-shrink {
+	z-index: -10 !important;
+	transform: scale(0,0) !important;
+	height: 0 !important;
+	margin: 0 !important;
+}
+
 h2 {
 	width: 100%;
 	text-align: center;
@@ -58,9 +65,13 @@ h2 {
 
 #game {
 	opacity: 1;
-	z-index: 10;
-	margin: 0 auto 10em auto;
-	transition: transform 300ms, opacity 1000ms, z-index 300ms;
+	margin: 0 auto 10em;
+	transition: transform 300ms, opacity 1000ms;
+}
+
+.hide-down {
+	opacity: 0 !important;
+	transform: translateY(1000px) !important;
 }
 
 #controlPanel {
@@ -132,15 +143,36 @@ h2 {
 	cursor: pointer;
 }
 
-.hide-down {
-	z-index: -10 !important;
-	opacity: 0 !important;
-	transform: translateY(2000px) !important;
+#playerTab, #computerTab {
+	position: absolute;
+	background: #88aaff;
+	margin: 0;
+	padding: $tab-padding;
+	z-index: 5;
+	font-size: $tab-font-size;
+	transition: transform 300ms;
 }
 
-.hide-shrink {
-	z-index: -10 !important;
-	transform: scale(0,0) !important;
-	height: 0 !important;
-	margin: 0 !important;
+.hide-up {
+	transform: translateY(-50px);
+}
+
+#playerTab {
+	top: 0px;
+	left: $big-offset;
+}
+@media (max-width: 550px) {
+	#playerTab {
+		left: $no-offset;
+	}
+}
+
+#computerTab {
+	top: 0px;
+	right: $big-offset;
+}
+@media (max-width: 550px) {
+	#computerTab {
+		right: $no-offset;
+	}
 }
