@@ -101,6 +101,7 @@ h2 {
 	border: 1px solid black;
 	transition: background 150ms;
 	font-size: $square-font-size-large;
+	font-weight: $square-font-weight;
 	text-align: center;
 }
 @media (max-width: 550px) {
@@ -128,7 +129,6 @@ h2 {
 }
 
 .square:hover {
-	background: #ddd;
 	cursor: pointer;
 }
 

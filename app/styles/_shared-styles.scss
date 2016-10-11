@@ -20,6 +20,10 @@ button:hover {
 	cursor: pointer;
 }
 
+button:active {
+	background: $main-active-color;
+}
+
 .flex {
 	display: flex;
 	flex-wrap: wrap;

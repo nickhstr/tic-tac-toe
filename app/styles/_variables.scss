@@ -1,6 +1,7 @@
 $main-font: Helvetica, Arial, sans-serif;
 $main-color: #000;
 $main-background: #fff;
+$main-active-color: #ddd;
 
 $board-background: #dfdfdf;
 $board-width-large: 75vh;
@@ -10,6 +11,7 @@ $square-width-large: calc(#{$board-width-large} / 3);
 $square-background: #fff;
 $square-font-size-large: calc(#{$board-width-large} / 4);
 $square-font-size-small: calc(#{$board-width-small} / 4);
+$square-font-weight: 100;
 $square-width-small: calc(#{$board-width-small} / 3);
 
 $border-thick: 2px solid black;
