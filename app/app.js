@@ -7,7 +7,7 @@ TicTacToe.prototype.getCurrentState = function() {
   return this.state[this.state.length - 1];
 }
 
-TicTacToe.prototype.reset = function() {
+TicTacToe.prototype.reset = function(type) {
   this.init({
     marker: null,
     player: null,
@@ -25,6 +25,7 @@ TicTacToe.prototype.init = function(game) {
   this.computerDelay = 750;
   this.playerTab = elById('playerTab');
   this.computerTab = elById('computerTab');
+  this.winOrDrawTab = elById('winOrDrawTab');
 
   var row1 = Array.prototype.slice.call(this.squares, 0, 3);
   var row2 = Array.prototype.slice.call(this.squares, 3, 6);
@@ -46,6 +47,23 @@ TicTacToe.prototype.init = function(game) {
   this.updateState({
     type: 'add',
     newState: initialState
+  });
+}
+
+TicTacToe.prototype.nextGame = function() {
+  var state = this.getCurrentState();
+  var newState = Object.assign({}, state, {
+    winner: null,
+    winningMove: false,
+    draw: false,
+    currentBoard: this.freshBoard(),
+    playerWinCount: parseInt(localStorage.getItem('playerWinCount')),
+    computerWinCount: parseInt(localStorage.getItem('computerWinCount'))
+  });
+
+  this.updateState({
+    type: 'add',
+    newState: newState
   });
 }
 
@@ -74,32 +92,35 @@ TicTacToe.prototype.notifySquares = function() {
       this.rows[i][j].innerHTML = board[i][j];
     }
   }
-
-  if (!winningMove) {
-    this.updateHandlers(true);
-  }
-  else {
-    this.updateHandlers(false);
-  }
 }
 
 TicTacToe.prototype.notifyTurn = function() {
   var state = this.getCurrentState();
 
-  if (state.activePlayer === 'computer' && !state.winningMove && !state.draw) {
+  if (state.activePlayer === 'Computer' && !state.winningMove && !state.draw) {
     this.updateHandlers(false);
     this.computerTurn();
     this.computerTab.className = '';
-    this.playerTab.className = 'hide-up';
+    this.playerTab.className = 'hide-edge';
   }
   else if (state.winningMove || state.draw || state.reset) {
     this.updateHandlers(false);
-    this.computerTab.className = 'hide-up';
-    this.playerTab.className = 'hide-up';
+    this.computerTab.className = 'hide-edge';
+    this.playerTab.className = 'hide-edge';
+
+    if (state.winningMove) {
+      this.updateWinOrDraw(state.winner + ' wins!');
+    }
+    else if (state.draw) {
+      this.updateWinOrDraw('It\'s a draw!');
+    }
+    else if (state.reset) {
+      this.updateWinOrDraw();
+    }
   }
   else {
     this.updateHandlers(true);
-    this.computerTab.className = 'hide-up';
+    this.computerTab.className = 'hide-edge';
     this.playerTab.className = '';
   }
 }
@@ -108,13 +129,33 @@ TicTacToe.prototype.notifyWinCounts = function() {
   var state = this.getCurrentState();
   var winner = state.winner;
 
-  if (winner === 'player') {
+  if (winner === 'Player') {
     var playerWins = state.playerWinCount + 1;
     return localStorage.setItem('playerWinCount', playerWins);
   }
-  if (winner === 'computer') {
+  if (winner === 'Computer') {
     var computerWins = state.computerWinCount + 1;
     return localStorage.setItem('computerWinCount', computerWins);
+  }
+}
+
+TicTacToe.prototype.updateWinOrDraw = function(message) {
+  var self = this;
+
+  if (message) {
+    this.winOrDrawTab.innerHTML = message;
+    this.winOrDrawTab.className = '';
+
+    setTimeout(function() {
+      self.winOrDrawTab.className = 'hide-win-draw';
+      self.winOrDrawTab.innerHTML = '';
+      // self.reset();
+      self.nextGame();
+    }, 2000);
+  }
+  else {
+    this.winOrDrawTab.innerHTML = '';
+    this.winOrDrawTab.className = 'hide-win-draw';
   }
 }
 
@@ -382,7 +423,7 @@ TicTacToe.prototype.takeTurn = function(x, y) {
   var winning = false;
   if (this.isValidTurn(x, y)) {
     var newState = {
-      activePlayer: (state.activePlayer === 'computer') ? 'player' : 'computer',
+      activePlayer: (state.activePlayer === 'Computer') ? 'Player' : 'Computer',
       playerMarker: (state.playerMarker === 'x') ? 'o' : 'x',
       computerWinCount: state.computerWinCount,
       playerWinCount: state.playerWinCount,
@@ -396,15 +437,6 @@ TicTacToe.prototype.takeTurn = function(x, y) {
       type: 'add',
       newState: newState
     });
-
-    if (winning) {
-      console.log(state.activePlayer + ' won!');
-      return;
-    }
-  }
-  else {
-    console.log('[' + x + '] ' + '[' + y + ']');
-    console.log('That space is taken already!');
   }
 }
 
@@ -441,7 +473,7 @@ TicTacToe.prototype.showBoard = function(bool) {
 
 function playerOrComputerFirst() {
   var random = Math.round(Math.random());
-  return random === 0 ? 'player' : 'computer';
+  return random === 0 ? 'Player' : 'Computer';
 }
 
 function startGame(game) {
@@ -455,7 +487,7 @@ window.onload = function(e) {
     var player = playerOrComputerFirst();
     var marker = this.elements.marker.value;
 
-    if (player === 'computer') {
+    if (player === 'Computer') {
       marker = (marker === 'x') ? 'o' : 'x'
     }
 
@@ -466,7 +498,8 @@ window.onload = function(e) {
 
     startGame({
       marker: marker,
-      player: player
+      player: player,
+      reset: false
     });
   });
 }
